@@ -1,9 +1,9 @@
 # Ask the user to input a number of unit (course / student)
-def input_something(args):
+def inputSomething(args):
     return int(input(f"Enter the number of {args} in this class: "))
 
 # Ask the user to enter a list of info for an type
-def input_infos(args):
+def inputInfo(args):
     item = {
         f"{args[0]}":{
             "name":args[1],
@@ -15,8 +15,15 @@ def input_infos(args):
 
     return item
 
+# Enter info for a course
+def inputCourse(args):
+    item = {
+        f"{args[0]}":args[1]
+    }
+    return item
+
 # Input the student mark in a course base on the course id
-def input_mark(id, students):
+def inputMark(id, students):
     if id in students:
         students[id]["marks"] = {}
     # TODO: check mark in student or not
@@ -41,7 +48,7 @@ def listStudents(students):
 
     # TODO: check if mark student and print out the information
     
-        if "marks" in students[s].keys():
+        if "marks" in students[s].keys() and len(students[s]['marks']) > 0:
             for m in students[s]['marks'].keys():
                 print(f"{m}: {students[s]['marks'][m]}")#, end="")
                 #for subject in students[s][m]:
@@ -51,17 +58,19 @@ def listStudents(students):
         print("-------------------------------------------------")
 
 # Display a list of courses
-def list_courses(courses):
+def listCourses(courses):
     if len(courses) == 0:
         print("There aren't any courses yet")
         
     print("Here is the course list: ")
     # TODO: add loop function to check the info of course
-    for c in courses:
-        print(f"{c+1}. {c['id']} - {c['name']}")
+    for key, value in courses.items():
+        print(f"{key} - {value}")
 
 # Main function for the "game"
 def main():
+    cNum = 0
+    stuNum = 0
     # Initialize the list for DATA option
     courses = {
         "ICT2.001":"ADS",
@@ -88,6 +97,11 @@ def main():
         "22BI13444":{
             "name":"No Mark Student",
             "dob":"17-09-2004"
+        },
+        "22BI13449":{
+            "name":" Second No Mark Student",
+            "dob":"17-09-2004",
+            "marks":{}
         }
     }
     num_students = 0
@@ -118,27 +132,59 @@ def main():
             break
 
         elif option == 1:                                                                            # Option 1
-            input_something(students)
+            try:
+                stuNum = inputSomething('students')
+                if stuNum < 1:
+                    print("Invalid number of students")
+                    continue
+                while stuNum > 0:
+                    print("""
+------------------------------------------------------------
+                          """)
+                    id = input("Enter the id: ") 
+                    name = input("Enter the name: ")      
+                    dob = input("Enter the date of birth(dd-mm-yyyy): ")                                                                   # Option 2                                                     
+                    students.update(inputInfo([id, name, dob]))
+                    stuNum=stuNum-1
+            except:
+                raise Exception("Invalid input")
+
         elif option == 2:    
             id = input("Enter the id: ") 
             name = input("Enter the name: ")      
             dob = input("Enter the date of birth(dd-mm-yyyy): ")                                                                   # Option 2                                                     
-            students.update(input_infos(id, name, dob))
+            students.update(inputInfo(id, name, dob))
+
         elif option == 3:
-            input_infos(courses)
+            cNum = inputSomething('courses')
+            
+            
+
         elif option == 4:
-            input_infos(courses)
+            if cNum is 0:
+                print("You have not enter the number of courses to be added!")
+                continue
+            while cNum > 0:
+                id = input("Enter course id: ") 
+                name = input("Enter course name: ")
+                courses.update(inputCourse([id, name]))
+                cNum=cNum-1
+
         elif option == 5:
-            input_infos(courses)
+            inputInfo(courses)
+
         elif option == 6:
-            input_infos(courses)
+            listCourses(courses)
+
         elif option == 7:
             listStudents(students)
+
         elif option == 8:
-            input_infos(courses)
+            inputInfo(courses)
             
         else:
-            print("Your input is invalid. Please try again!")
+            print("""
+            Your input is invalid""")
 
 # Call the main function
 if __name__ == "__main__":
