@@ -1,6 +1,6 @@
 # Ask the user to input a number of unit (course / student)
 def inputSomething(args):
-    return int(input(f"Enter the number of {args} in this class: "))
+    return input(f"Enter the number of {args} in this class: ")
 
 # Ask the user to enter a list of info for an type
 def inputInfo(args):
@@ -23,11 +23,36 @@ def inputCourse(args):
     return item
 
 # Input the student mark in a course base on the course id
-def inputMark(id, students):
-    if id in students:
-        students[id]["marks"] = {}
-    # TODO: check mark in student or not
-    # If not, enter the mark for the course
+def inputMark(students, courses):
+    sid = input("Enter the student id to add mark: ")
+    cid = input("Enter the course id to add mark: ")
+    if cid not in courses or sid not in students:
+        print("The course or student does not exist!")
+        return
+    else:
+        mark = input("Enter the mark: ")
+        temp = mark
+        if temp.replace(".", "").isnumeric():
+            item = {
+                f"{courses[cid]}":mark
+            }
+            students[sid]['marks'].update(item)
+        else:
+            print("""
+            Invalid mark""")
+            
+def displayMarks(students, courses):
+    cid = input("Enter the course id to add mark: ")
+    
+    for s in students.keys():
+        if "marks" in students[s].keys() and len(students[s]['marks']) > 0:
+            if courses[cid] in students[s]['marks']:
+                print(f"{students[s]['name']}: {students[s]['marks'][courses[cid]]}")
+                #for subject in students[s][m]:
+                 #   print(f"Marks (m} - {students[s]['marks'][m].values()}): ", end="")
+            else:
+                print(f"{students[s]['name']} has no mark")
+            print("-------------------------------------------------")
 
 
 # Display a list of students
@@ -81,7 +106,7 @@ def main():
             "name":"Tran Anh Vu dep trai",
             "dob":"04-09-2004",
             "marks":{
-                "calculus":19.9,
+                "Calculus I":19.9,
                 "ads":20
             }
         },
@@ -89,7 +114,7 @@ def main():
             "name":"Nguyen Quang Minh",
             "dob":"17-09-2004",
             "marks":{
-                "calculus":10,
+                "Calculus I":10,
                 "ads":13,
                 "fdb":11.2
             }
@@ -104,8 +129,6 @@ def main():
             "marks":{}
         }
     }
-    num_students = 0
-    num_courses = 0
 
     while(True):
         print("""
@@ -132,37 +155,47 @@ def main():
             break
 
         elif option == 1:                                                                            # Option 1
-            try:
-                stuNum = inputSomething('students')
-                if stuNum < 1:
-                    print("Invalid number of students")
-                    continue
-                while stuNum > 0:
+            stuNum = inputSomething('students')
+            if stuNum.isnumeric()==False:
+                print("""
+                Invalid number of students""")
+                continue
+            else: 
+                stuNum = int(stuNum)
+                if stuNum < 1:     
                     print("""
+                    Invalid number of students""")
+                    continue    
+
+        elif option == 2:   
+            if stuNum is 0:
+                print("You have not enter a valid number of students to be added!")
+            while stuNum > 0:
+                print("""
 ------------------------------------------------------------
                           """)
-                    id = input("Enter the id: ") 
-                    name = input("Enter the name: ")      
-                    dob = input("Enter the date of birth(dd-mm-yyyy): ")                                                                   # Option 2                                                     
-                    students.update(inputInfo([id, name, dob]))
-                    stuNum=stuNum-1
-            except:
-                raise Exception("Invalid input")
-
-        elif option == 2:    
-            id = input("Enter the id: ") 
-            name = input("Enter the name: ")      
-            dob = input("Enter the date of birth(dd-mm-yyyy): ")                                                                   # Option 2                                                     
-            students.update(inputInfo(id, name, dob))
+                id = input("Enter the id: ") 
+                name = input("Enter the name: ")      
+                dob = input("Enter the date of birth(dd-mm-yyyy): ")                                                                   # Option 2                                                     
+                students.update(inputInfo([id, name, dob]))
+                stuNum=stuNum-1 
 
         elif option == 3:
             cNum = inputSomething('courses')
-            
-            
+            if cNum.isnumeric() == False:
+                print("""
+                Invalid number of courses!""")
+                continue
+            else:
+                cNum = int(cNum)
+                if cNum < 1:
+                    print("""
+                    Invalid number of courses!""")
+                    continue
 
         elif option == 4:
             if cNum is 0:
-                print("You have not enter the number of courses to be added!")
+                print("You have not enter a valid number of courses to be added!")
                 continue
             while cNum > 0:
                 id = input("Enter course id: ") 
@@ -171,7 +204,8 @@ def main():
                 cNum=cNum-1
 
         elif option == 5:
-            inputInfo(courses)
+            inputMark(students, courses)
+            continue
 
         elif option == 6:
             listCourses(courses)
@@ -180,7 +214,7 @@ def main():
             listStudents(students)
 
         elif option == 8:
-            inputInfo(courses)
+            displayMarks(students,courses)
             
         else:
             print("""
