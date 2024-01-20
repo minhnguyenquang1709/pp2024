@@ -19,13 +19,6 @@ def checkDOB(input_date):
     # If any condition fails, return False
     return False
 
-def addCourse(courses):
-	id = input("Enter ID of course: ")
-	name = input("Enter the name of course: ")
-	newCourse = Course(id, name)
-	courses.update({id:newCourse})
-
-
 class Person:
 	def __init__(self, name, dob):
 		self.__name = name
@@ -184,7 +177,7 @@ class Course():
 			print("\n\tThis course has no class!")
 		else:
 			for i in self.getClasses():
-				print("==========================================================")
+				#print("==========================================================")
 				i.info()
 
 	def makeClass(self):
@@ -212,7 +205,7 @@ class Course():
 		
 	def displayMarks(self):
 		if len(self.getMarks()) == 0:
-			print("This course has no mark")
+			print("\n\tThis course has no mark")
 		else:
 			for stuName, mark in self.getMarks().items():
 				print(f"\t{stuName}: {mark}")
@@ -238,20 +231,42 @@ class Course():
 				self.getMarks().update({sid: float(mark)})
 				return True
 			
+class CoursesContainer:
+	def __init__(self):
+		ads = Course("ICT2.001", "Algorithm and Data Structure")
+		algeStruc = Course("MATH2.002", "Algebraic Structures")
+		cal1 = Course("MATH1.001", "Calculus I")
+		oop = Course("ICT2.002", "Object-oriented Programming")
+		self.__courses = {ads.getID():ads,
+	 		algeStruc.getID():algeStruc,
+	 		cal1.getID():cal1,
+	 		oop.getID():oop}
+
+	def getCourses(self):
+		return self.__courses
+	
+	def makeCourse(self):
+		courseID = input("Enter the course's ID: ")
+		courseName = input("Enter the course's name: ")
+		if courseID in self.getCourses():
+			print("This course already exists, do you want to update it?(old data will be removed)")
+			choice = confirm()
+			if choice:
+				return Course(courseID, courseName)
+			else:
+				return None
+		return Course(courseID, courseName)
+
+	def updateCourse(self):
+		c = self.makeCourse()
+		if c != None:
+			self.getCourses().update({c.getID():c})
+		else:
+			print("\n\tThere is no course to add!")
+			
 
 def main():
-	ads = Course("ICT2.001", "Algorithm and Data Structure")
-	algeStruc = Course("MATH2.002", "Algebraic Structures")
-	cal1 = Course("MATH1.001", "Calculus I")
-	oop = Course("ICT2.002", "Object-oriented Programming")
-	courses = {ads.getID():ads,
-			algeStruc.getID():algeStruc,
-			cal1.getID():cal1,
-			oop.getID():oop}
-	
-	print("Current existing courses:")
-	for course in courses.values():
-		print(f"{course.getID()} - {course.getName()}")
+	courses = CoursesContainer()
 
 	# student1 = Student("22BI13482", "Tran Anh Vu", "04-09-2004")
 	# student2 = Student("22BI13392", "Dao Thai Son", "19-10-2004")
@@ -272,7 +287,7 @@ def main():
 	while True:
 		print("H===========================================================H")
 		print("Current existing courses:")
-		for course in courses.values():
+		for course in courses.getCourses().values():
 			print(f"{course.getID()} - {course.getName()}")
 		print("""
 			0. Exit
@@ -294,39 +309,42 @@ def main():
 			break
 		elif option == 1:
 			cid = input("Enter the ID of the course to add students to: ")
-			if cid in courses:
-				className = input("Enter the name of the class to add student to: ")
-				for clas in courses[cid].getClasses():
-					if className == clas.getName():
-						clas.addManyStudent()
-					else:
+			if cid in courses.getCourses():
+				if len(courses.getCourses()[cid].getClasses()) < 1:
+					print("\n\tThis course does not have any class. You need to add classes first!")
+				else:
+					className = input("Enter the name of the class to add student to: ")
+					for clas in courses.getCourses()[cid].getClasses():
+						if className == clas.getName():
+							clas.addManyStudent()
+							continue
 						print("\n\tInvalid class!")
 			else:
 				print("\n\tInvalid course ID!")
 		elif option == 2:
 			cid = input("Enter the ID of the course to add a class to: ")
-			if cid in courses:
-				course = courses[cid]
+			if cid in courses.getCourses():
+				course = courses.getCourses()[cid]
 				course.addClass()
 			else:
 				print("\n\tInvalid course ID!")
 		elif option == 3:
-			addCourse(courses)
+			courses.updateCourse()
 		elif option == 4:
 			cid = input("Enter the ID of the course to input marks for: ")
 			if cid in courses:
-				course = courses[cid]
+				course = courses.getCourses()[cid]
 				course.addMark()
 			else:
 				print("\n\tInvalid course ID!")
 		elif option == 5:
-			for course in courses.values():
+			for course in courses.getCourses().values():
 				print("-------------------------------------------------------------------")
 				course.info()
 		elif option == 6:
 			cid = input("Enter the ID of the course to show student marks: ")
 			if cid in courses:
-				course = courses[cid]
+				course = courses.getCourses()[cid]
 				course.displayMarks()
 			else:
 				print("\n\tInvalid course ID!")
