@@ -151,7 +151,7 @@ class StudentList:
             for cid, info in student.getMarks().items():
                 print(f"{cid} - {info[0]} - Class: {info[1]} - Mark: {info[2]}")
 
-    def calGPA(self):
+    def calGPA(self, stdscr):
         studentList = self.getList().items()
         for sid, student in studentList:
             print(f"\n{sid} - {student.getName()}: {student.GPA()}")
@@ -167,7 +167,7 @@ class StudentList:
         list2 = np.array([], dtype=dtype)
         for  student in list1:
             list2 = np.append(list2, np.array((student, student.getGPA()), dtype=dtype))
-        # print(list2)
+        print(list2)
         np.sort(list2, order='gpa')
         list2 = list2[::-1]
 
@@ -419,6 +419,9 @@ def main():
         else:
             print("\n\tInvalid number!")
             continue
+
+
+
 
 if __name__ == "__main__":
     main()
