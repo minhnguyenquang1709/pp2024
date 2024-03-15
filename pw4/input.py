@@ -81,7 +81,7 @@ def addStudentToCourse(course, stdscr, studentList):
             stdscr.addstr("\n\tThe class does not exist!")
             # stdscr.refresh()
             return
-        student = studentList[sid].enroll(course.getID(), course.getName(), className, course.getCredit())
+        student = studentList[sid].enroll(stdscr, course.getID(), course.getName(), className, course.getCredit())
         course.getStudents().update({sid:[studentList[sid].getName(), className, 0]})
 
 def addMark(course, stdscr, studentList):
@@ -105,8 +105,8 @@ def addMark(course, stdscr, studentList):
             mark = float(mark) * 10
             mark = math.floor(mark)
             mark = mark/10.0
-            course.__students[sid][2] = mark
-            studentList[sid].setMark(course.getID(), mark)
+            course.getStudents()[sid][2] = mark
+            studentList[sid].setMark(stdscr, course.getID(), mark)
         except curses.error:
             stdscr.addstr("\n\tFailed to add mark!")
             stdscr.refresh()

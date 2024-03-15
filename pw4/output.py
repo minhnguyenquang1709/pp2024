@@ -22,12 +22,12 @@ def displayStudents(studentList, stdscr):
                 stdscr.addstr(f"\n{cid} - {info[0]} - Class: {info[1]} - Mark: {info[2]}")
 
 def calGPA(studentList, stdscr):
-        studentList = studentList.getList().items()
-        if len(studentList) <= 0:
+        studentListX = studentList.getList().items()
+        if len(studentListX) <= 0:
             stdscr.addstr("\n\tThere is no student!")
             stdscr.refresh()
             stdscr.getch()
-        for sid, student in studentList:
+        for sid, student in studentListX:
             stdscr.addstr(f"\n{sid} - {student.getName()}: {student.GPA()}")
             stdscr.refresh()
             x, y = stdscr.getyx()
@@ -40,6 +40,8 @@ def calGPA(studentList, stdscr):
 def sortByGPA(studentList, stdscr):
         if len(studentList.getList()) <= 0:
             stdscr.addstr("\n\tThere is no student!")
+            stdscr.refresh()
+            stdscr.getch()
             return
         list1 = np.array(list(studentList.getList().values()))
         # stdscr.addstr(list1)
@@ -49,11 +51,11 @@ def sortByGPA(studentList, stdscr):
         for  student in list1:
             list2 = np.append(list2, np.array((student, student.getGPA()), dtype=dtype))
         
-        np.sort(list2, order='gpa')
-        list2 = list2[::-1]
+        # np.sort(list2, order='gpa')
+        sortedList = sorted(list2, key=lambda student: student[1], reverse=True)
 
-        for student in list2:
-            stdscr.addstr(f"{student[0].getID()} - {student[0].getName()}: {student[0].getGPA()}")
+        for student in sortedList:
+            stdscr.addstr(f"\n{student[0].getID()} - {student[0].getName()}: {student[1]}")
             stdscr.refresh()
             x, y = stdscr.getyx()
             if y == (curses.LINES - 1):

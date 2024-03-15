@@ -1,5 +1,6 @@
 from input import *
 import numpy as np
+import curses
 
 class Person:
     def __init__(self, name, dob):
@@ -28,7 +29,7 @@ class Student(Person):
     def __init__(self, id, name, dob):
         super().__init__(name, dob)
         self.__id = id
-        self.__gpa = 0
+        self.__gpa = 0.0
         self.__marks = {} # {courseID:[courseName, className, mark, credit]}
 
     def getGPA(self):

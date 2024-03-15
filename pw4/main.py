@@ -162,6 +162,7 @@ def main(stdscr):# curses put a screen on top of the terminal
                 stdscr.addstr("\n\tInvalid number!")
                 stdscr.refresh()
                 stdscr.getch()
+                stdscr.clear()
                 continue
             
 

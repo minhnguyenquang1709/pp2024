@@ -1,3 +1,5 @@
+import curses
+
 class Course():
     def __init__(self, id, name, credit):
         self.__classID = 1
@@ -9,9 +11,6 @@ class Course():
 
     def getCredit(self):
         return self.__credit
-
-    def getMarks(self):
-        return self.__marks
 
     def getID(self):
         return self.__id
