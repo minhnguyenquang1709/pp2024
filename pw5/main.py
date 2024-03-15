@@ -10,11 +10,13 @@ from curses import wrapper
 
 def main(stdscr):# curses put a screen on top of the terminal
     stdscr = curses.initscr()
-    studentData, courseData, markData = loadData(decompress("students.dat", stdscr), stdscr)
-    # for line in courseData:
-    #     stdscr.addstr(f"{line[0]}-{line[1]}-{line[2]}")
-    #     stdscr.refresh()
-    # stdscr.getch()
+    try:
+        studentData, courseData, markData = loadData(decompress("students.dat", stdscr), stdscr)
+    except IOError:
+        studentData = None
+        courseData = None
+        markData = None
+        pass
     
     stdscr.clear() # clear the screen
     curses.cbreak() # turn off input buffering
@@ -25,20 +27,21 @@ def main(stdscr):# curses put a screen on top of the terminal
     courseList = CourseContainer()
 
     # Load data
-    for info in studentData:
-        studentList.getList().update({info[0]:Student(info[0], info[1], info[2])})
-        studentList.getList()[info[0]].setGPA(info[3])
+    if studentData != None and courseData != None and markData != None:
+        for info in studentData:
+            studentList.getList().update({info[0]:Student(info[0], info[1], info[2])})
+            studentList.getList()[info[0]].setGPA(info[3])
 
-    for info in courseData:
-        courseList.getCourses().update({info[0]:Course(info[0], info[1], int(info[2]))})
-        for markInfo in markData:
-            if info[0] in markInfo:
-                # Update the student list in Course
-                courseList.getCourses()[info[0]].getStudents().update({markInfo[0]: [studentList.getList()[markInfo[0]].getName(), markInfo[2]]})
+        for info in courseData:
+            courseList.getCourses().update({info[0]:Course(info[0], info[1], int(info[2]))})
+            for markInfo in markData:
+                if info[0] in markInfo:
+                    # Update the student list in Course
+                    courseList.getCourses()[info[0]].getStudents().update({markInfo[0]: [studentList.getList()[markInfo[0]].getName(), markInfo[2]]})
 
-                # Update mark in Student
-                studentList.getList()[markInfo[0]].enroll(stdscr, markInfo[1], info[1], info[2])
-                studentList.getList()[markInfo[0]].getMarks()[markInfo[1]][1] = markInfo[2]
+                    # Update mark in Student
+                    studentList.getList()[markInfo[0]].enroll(stdscr, markInfo[1], info[1], info[2])
+                    studentList.getList()[markInfo[0]].getMarks()[markInfo[1]][1] = markInfo[2]
 
     try:
         # Menu
