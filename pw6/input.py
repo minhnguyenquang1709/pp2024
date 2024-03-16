@@ -215,48 +215,62 @@ def addMark(course, stdscr, studentList): # Add mark for a specific student in a
 def decompress(compressedFile, stdscr):
     # with gzip.open(compressedFile, "rb") as file:
     #     data = file.readlines()
-    with open(compressedFile, "rb") as dataFile:
-        data = dataFile.read()
-        data = pickle.loads(data)
+    with gzip.open(compressedFile, "rb") as dataFile:
+        pickledData = dataFile.read()
+    data = pickle.loads(pickledData)
         # stdscr.addstr(data)
     for line in data:
-        
-        stdscr.addstr(line)
-        stdscr.addstr("hehe")
+        for i in line:
+
+            stdscr.addstr(i)
+            stdscr.refresh()
+            # stdscr.getch()
+        # stdscr.addstr("hehe")
     stdscr.refresh()
     stdscr.getch()
     return data
 
 def loadData(data, stdscr):
+    studentDataX, courseDataX, markDataX = data
+    section = None
     studentData = []
     courseData = []
     markData = []
-    section = None
-    for line in data:
-        
-        stdscr.addstr(line)
+    for line in studentDataX:
+        # line = line.strip()
+        stdscr.addstr(str(line))
         stdscr.refresh()
         stdscr.getch()
-        stdscr.clear()
-        if line in ("STUDENT", "COURSE","MARK"):
+        # stdscr.clear()
+        if "STUDENT" in line: # it does not go here
             section = line
         else:
-            if section == "STUDENT":
-                sid, sName, dob, gpa = line.split("-")
-                dob=dob.replace("/", "-")
-                studentData.append((sid, sName, dob, gpa))
-                # stdscr.addstr(f"{sid}-{sName}-{gpa}")
-                # stdscr.refresh()
-
-            if section == "COURSE":
-                courseID, cName, credit = line.split("-")
-                credit = int(credit)
-                courseData.append((courseID, cName, credit))
+            
+            sid, sName, dob, gpa = line.split("-")
+            dob=dob.replace("/", "-")
+            studentData.append((sid, sName, dob, gpa))
+            stdscr.addstr(f"{sid}-{sName}-{gpa}")
+            stdscr.refresh()
+            stdscr.getch()
+    # stdscr.getch()
+    for line in courseDataX:
+        if "COURSE" in line:
+            section = line
+        else:
+            
+            courseID, cName, credit = line.split("-")
+            credit = int(credit)
+            courseData.append((courseID, cName, credit))
                 # stdscr.addstr(f"{courseID}-{cName}")
                 # stdscr.refresh()
-            if section == "MARK":
-                sid, cid, mark = line.split("-")
-                mark = float(mark)
-                markData.append((sid,cid,mark))
+
+    for line in markDataX:
+        if "MARK" in line:
+            section = line
+        else:
+    
+            sid, cid, mark = line.split("-")
+            mark = float(mark)
+            markData.append((sid,cid,mark))
 
     return (studentData, courseData, markData)

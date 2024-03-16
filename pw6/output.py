@@ -53,7 +53,7 @@ def sortByGPA(studentList, stdscr):
         list2 = np.array([], dtype=dtype)
         for  student in list1:
             list2 = np.append(list2, np.array((student, student.getGPA()), dtype=dtype))
-        
+
         # np.sort(list2, order='gpa')
         sortedList = sorted(list2, key=lambda student: student[1], reverse=True)
 
@@ -69,23 +69,28 @@ def sortByGPA(studentList, stdscr):
 
 def compress(studentList, courseList):
     fileNames = ["students.txt", "courses.txt", "marks.txt"]
-    with gzip.open("studentsGZ.dat.gz", "wb") as compressedFile:
+    studentData = ["STUDENT\n"]
+    courseData = ["COURSE\n"]
+    markData = ["MARK\n"]
+    with open("studentsX.dat", "w") as compressedFile:
         for file in fileNames:
-            with open(file, "rb") as contentFile:
+            with open(file, "r") as contentFile:
                 if file == "students.txt":
-                    compressedFile.write("STUDENT\n".encode())
-                    compressedFile.write(contentFile.read())
+                    studentData = studentData + contentFile.readlines()
+                    # compressedFile.write("STUDENT\n")
+                    # compressedFile.write(contentFile.read())
                 if file == "courses.txt":
-                    compressedFile.write("COURSE\n".encode())
-                    compressedFile.write(contentFile.read())
+                    courseData = courseData + contentFile.readlines()
+                    # compressedFile.write("COURSE\n")
+                    # compressedFile.write(contentFile.read())
                 if file == "marks.txt":
-                    compressedFile.write("MARK\n".encode())
-                    compressedFile.write(contentFile.read())
-    with gzip.open("studentsGZ.dat.gz", "rb") as compressed:
-        data = compressed.read()
-    pickledFile = open("students.dat", "wb")
-    pickle.dump(data, pickledFile)
-    pickledFile.close()
-    
+                    markData = markData + contentFile.readlines()
+                    # compressedFile.write("MARK\n")
+                    # compressedFile.write(contentFile.read())
 
-    # os.rename("students.dat.gz", "students.dat")
+    data = pickle.dumps((studentData, courseData, markData))
+
+    with gzip.open("students.dat.gz", "wb") as compressed:
+        compressed.write(data)
+
+    os.rename("students.dat.gz", "students.dat")
