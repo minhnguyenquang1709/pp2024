@@ -219,15 +219,15 @@ def decompress(compressedFile, stdscr):
         pickledData = dataFile.read()
     data = pickle.loads(pickledData)
         # stdscr.addstr(data)
-    for line in data:
-        for i in line:
+    # for line in data:
+    #     for i in line:
 
-            stdscr.addstr(i)
-            stdscr.refresh()
+            # stdscr.addstr(i)
+            # stdscr.refresh()
             # stdscr.getch()
         # stdscr.addstr("hehe")
-    stdscr.refresh()
-    stdscr.getch()
+    # stdscr.refresh()
+    # stdscr.getch()
     return data
 
 def loadData(data, stdscr):
@@ -238,20 +238,20 @@ def loadData(data, stdscr):
     markData = []
     for line in studentDataX:
         # line = line.strip()
-        stdscr.addstr(str(line))
-        stdscr.refresh()
-        stdscr.getch()
+        # stdscr.addstr(str(line))
+        # stdscr.refresh()
+        # stdscr.getch()
         # stdscr.clear()
-        if "STUDENT" in line: # it does not go here
+        if "STUDENT" in line:
             section = line
         else:
             
             sid, sName, dob, gpa = line.split("-")
             dob=dob.replace("/", "-")
             studentData.append((sid, sName, dob, gpa))
-            stdscr.addstr(f"{sid}-{sName}-{gpa}")
-            stdscr.refresh()
-            stdscr.getch()
+            # stdscr.addstr(f"{sid}-{sName}-{gpa}")
+            # stdscr.refresh()
+            # stdscr.getch()
     # stdscr.getch()
     for line in courseDataX:
         if "COURSE" in line:
